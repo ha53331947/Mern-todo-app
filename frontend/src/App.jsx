@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, CheckCircle, Circle } from 'lucide-react';
 import axios from 'axios';
 
-// ⚠️ Yahan apna sahi Vercel production URL dalo
-const API_URL = "https://haris-mern-todo-app.vercel.app/api/todos";
+const API_URL = "https://mern-todo-app-backend-eosin.vercel.app/api/todos";
 
 function App() {
   const [todos, setTodos] = useState([]);
