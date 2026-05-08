@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, CheckCircle, Circle } from 'lucide-react';
 import axios from 'axios';
 
-const API_URL = "https://haris-mern-todo-app-a7h07qicw-ha53331947-5647s-projects.vercel.app/api/todos";
+// ⚠️ Yahan apna sahi Vercel production URL dalo
+const API_URL = "https://haris-mern-todo-app.vercel.app/api/todos";
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -78,7 +79,8 @@ function App() {
       backgroundColor: '#111',
       borderRadius: '14px',
       marginBottom: '12px',
-      border: '1px solid #1a1a1a'
+      border: '1px solid #1a1a1a',
+      animation: 'fadeIn 0.3s ease'
     }
   };
 
@@ -88,7 +90,7 @@ function App() {
     try {
       const res = await axios.get(API_URL);
       setTodos(res.data);
-    } catch (err) { console.error(err); }
+    } catch (err) { console.error("Fetch Error:", err); }
   };
 
   const handleAdd = async () => {
@@ -97,21 +99,21 @@ function App() {
       const res = await axios.post(API_URL, { text: input });
       setTodos([...todos, res.data]);
       setInput('');
-    } catch (err) { console.error(err); }
+    } catch (err) { console.error("Add Error:", err); }
   };
 
   const handleToggle = async (id) => {
     try {
       const res = await axios.put(`${API_URL}/${id}`);
       setTodos(todos.map(t => t._id === id ? res.data : t));
-    } catch (err) { console.error(err); }
+    } catch (err) { console.error("Toggle Error:", err); }
   };
 
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${API_URL}/${id}`);
       setTodos(todos.filter(t => t._id !== id));
-    } catch (err) { console.error(err); }
+    } catch (err) { console.error("Delete Error:", err); }
   };
 
   return (
@@ -119,6 +121,7 @@ function App() {
       <style>{`
         body { margin: 0; background-color: #000; overflow: hidden; }
         input:focus { border-color: #7c3aed !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #7c3aed; borderRadius: 10px; }
       `}</style>
@@ -173,7 +176,7 @@ function App() {
                   size={18} 
                   color="#ef4444" 
                   style={{ cursor: 'pointer', opacity: 0.7 }} 
-                  onClick={() => handleDelete(todo._id)}
+                  onClick={(e) => { e.stopPropagation(); handleDelete(todo._id); }}
                 />
               </div>
             ))

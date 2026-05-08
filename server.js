@@ -6,28 +6,30 @@ import dns from 'dns';
 
 dotenv.config();
 
-// Pakistani ISPs ke liye DNS fix
-dns.setDefaultResultOrder('ipv4first');
+// Local DNS fix (Only for local ISP issues)
+if (process.env.NODE_ENV !== 'production') {
+    dns.setDefaultResultOrder('ipv4first');
+}
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+// Root route (Taki Vercel par 404 na aaye)
+app.get("/", (req, res) => res.send("Todo API is running..."));
+
 // MongoDB Connection
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      serverSelectionTimeoutMS: 30000,
-      socketTimeoutMS: 45000,
-      family: 4,
-      maxPoolSize: 10,
-    });
+    // Vercel deployment ke liye options ko simple rakha hai
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ MongoDB Atlas Connected!");
   } catch (err) {
     console.error("❌ Connection Error:", err.message);
-    console.log("🔄 10 second baad retry karega...");
-    setTimeout(connectDB, 10000); // auto retry
+    if (process.env.NODE_ENV !== 'production') {
+        setTimeout(connectDB, 10000);
+    }
   }
 };
 
@@ -73,5 +75,10 @@ app.delete('/api/todos/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+// Vercel deployment fix:
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+}
+
+export default app; // Ye line Vercel ke liye zaroori hai
