@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, CheckCircle, Circle } from 'lucide-react';
 import axios from 'axios';
 
-const API_URL = "http://localhost:5000/api/todos";
+const API_URL = "https://haris-mern-todo-app-a7h07qicw-ha53331947-5647s-projects.vercel.app/api/todos";
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -13,8 +13,8 @@ function App() {
       backgroundColor: '#000000',
       minHeight: '100vh',
       width: '100vw',
-      display: 'grid', // Grid is best for perfect centering
-      placeItems: 'center', // Horizontally and Vertically center
+      display: 'grid',
+      placeItems: 'center',
       fontFamily: "'Inter', sans-serif",
       margin: 0,
       position: 'fixed',
